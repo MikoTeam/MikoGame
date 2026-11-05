@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Nova - Web Game</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; padding: 0; background: #111; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
+        
+        /* Container Utama */
+        #app { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
+
+        /* UI Overlay Lobby (Landscape Friendly) */
+        #lobby { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            display: flex; flex-direction: column; justify-content: space-between; 
+            color: white; background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d); 
+            z-index: 10; padding: 20px;
+        }
+        
+        .top-bar { display: flex; justify-content: space-between; font-weight: bold; font-size: 14px; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px;}
+        
+        /* Tombol START di tengah */
+        .center-content { display: flex; flex-direction: column; align-items: center; justify-content: center; flex-grow: 1; }
+        
+        .start-btn { 
+            background: #e74c3c; border: 3px solid #fff; padding: 15px 40px; 
+            color: white; font-size: 24px; border-radius: 50px; font-weight: 900; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5); cursor: pointer; letter-spacing: 2px;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        /* Menu Bawah */
+        .bottom-menu { 
+            display: flex; justify-content: space-around; background: rgba(0,0,0,0.7); 
+            padding: 10px; border-radius: 12px; flex-wrap: wrap; gap: 10px;
+        }
+        .grid-btn { 
+            background: transparent; border: none; color: #ddd; font-size: 12px; 
+            display: flex; flex-direction: column; align-items: center; cursor: pointer;
+        }
+        .grid-btn span { font-size: 24px; margin-bottom: 5px; }
+        .grid-btn:active { color: #f1c40f; transform: scale(0.95); }
+
+        /* Container Game */
+        #game-container { display: none; width: 100%; height: 100%; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/phaser3-rex-plugins@1.60.8/dist/rexvirtualjoystickplugin.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- UI LOBBY -->
+        <div id="lobby">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div>👤 MikoPlayer</div>
+                <div>🪙 <span id="gold-amount">1000</span> Gold</div>
+            </div>
+
+            <!-- Tombol Start -->
+            <div class="center-content">
+                <h1 style="color: #f1c40f; text-shadow: 2px 2px #000; font-size: 36px; margin: 0 0 20px 0;">NOVA</h1>
+                <button class="start-btn" onclick="goFullscreenAndStart()">START GAME</button>
+            </div>
+
+            <!-- Menu Bawah -->
+            <div class="bottom-menu">
+                <button class="grid-btn" onclick="alert('Shop segera hadir!')"><span>🛒</span>SHOP</button>
+                <button class="grid-btn" onclick="alert('Gacha segera hadir!')"><span>🎰</span>GACHA</button>
+                <button class="grid-btn" onclick="alert('Battle Pass segera hadir!')"><span>🎫</span>PASS</button>
+                <button class="grid-btn" onclick="alert('DM segera hadir!')"><span>💬</span>DM</button>
+                <button class="grid-btn" onclick="alert('Event segera hadir!')"><span>🎉</span>EVENT</button>
+                <button class="grid-btn" onclick="alert('Karakter segera hadir!')"><span>👤</span>KARAKTER</button>
+            </div>
+        </div>
+
+        <!-- Container Game -->
+        <div id="game-container"></div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
