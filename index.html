@@ -3,110 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Nova - Web Game</title>
+    <title>Nova Game</title>
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; padding: 0; background: #111; overflow: hidden; font-family: sans-serif; user-select: none; }
+        body { margin: 0; padding: 0; background-color: #111; color: white; font-family: sans-serif; user-select: none; overflow: hidden;}
         
-        /* Kunci Layar jadi Landscape Tampilan */
-        #app { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
-        
-        /* --- UI LOBBY ALA FF --- */
+        /* LOBBY */
         #lobby { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            background: url('https://picsum.photos/1920/1080?blur=5') center/cover; /* Background tempat */
-            display: none; /* Sembunyiin dulu, munculin pas diputar */
-            flex-direction: column; justify-content: space-between; z-index: 10;
+            width: 100vw; height: 100vh; 
+            /* ⬇️ GANTI LINK DI BAWAH INI PAKAI LINK RAW DARI GITHUB LO ⬇️ */
+            background: url('https://raw.githubusercontent.com/MikoTeam/MikoGame/main/assets/e305673ce9d3fb70bdb0aec463f390b.jpg') center/cover no-repeat; 
+            background-color: #1a2a6c; /* Warna cadangan kalau gambar lemot */
+            display: flex; flex-direction: column; justify-content: space-between; 
+            padding: 20px; position: absolute; top:0; left:0; z-index: 10;
         }
-
-        /* Top Bar (Profile & Gold) */
-        .top-bar { 
-            display: flex; justify-content: space-between; padding: 10px 20px; 
-            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
-        }
-        .profile-card { display: flex; align-items: center; background: rgba(0,0,0,0.5); border-radius: 20px; padding: 5px 15px; color: white; border: 1px solid #f1c40f; }
-        .gold-card { display: flex; align-items: center; background: rgba(0,0,0,0.5); border-radius: 20px; padding: 5px 15px; color: #f1c40f; border: 1px solid #f1c40f; }
-
-        /* Karakter Tengah */
-        .center-char { flex-grow: 1; display: flex; justify-content: center; align-items: center; }
-        .char-model { width: 150px; height: 250px; background: rgba(255,255,255,0.2); border: 2px dashed #fff; display: flex; align-items: center; justify-content: center; color: white; }
-
-        /* Menu Kanan (Shop, Gacha, dll) */
-        .right-menu { position: absolute; right: 20px; top: 100px; display: flex; flex-direction: column; gap: 15px; }
-        .menu-icon { 
-            width: 50px; height: 50px; background: rgba(0,0,0,0.6); border: 2px solid #3498db; 
-            border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; color: white; 
-        }
-        .menu-icon:active { background: #3498db; }
-
-        /* Tombol START Bawah Kanan */
-        .bottom-right { position: absolute; bottom: 20px; right: 20px; display: flex; align-items: flex-end; gap: 10px; }
+        
+        .top-bar { display: flex; justify-content: space-between; font-weight: bold; }
+        .gold { background: rgba(0,0,0,0.7); padding: 5px 15px; border-radius: 20px; color: #f1c40f; border: 1px solid #f1c40f; }
+        
+        .center-content { display: flex; flex-direction: column; align-items: center; justify-content: center; flex-grow: 1; }
+        
         .start-btn { 
-            background: linear-gradient(to bottom, #f1c40f, #e67e22); border: 3px solid #fff; 
-            padding: 15px 40px; color: white; font-size: 24px; border-radius: 10px; 
-            font-weight: 900; box-shadow: 0 5px 15px rgba(0,0,0,0.5); cursor: pointer;
-            text-shadow: 1px 1px 2px #000;
+            background: #e74c3c; border: 3px solid #fff; padding: 15px 40px; 
+            color: white; font-size: 24px; border-radius: 10px; font-weight: 900; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5); cursor: pointer; margin-top: 20px;
         }
-        .mode-select { display: flex; flex-direction: column; gap: 5px; }
-        .mode-btn { background: rgba(0,0,0,0.7); color: white; border: 1px solid #fff; padding: 5px 10px; border-radius: 5px; font-size: 12px; }
+        
+        #game-container { display: none; width: 100vw; height: 100vh; position: absolute; top:0; left:0; z-index: 5; }
 
-        /* Container Game */
-        #game-container { display: none; width: 100%; height: 100%; position: absolute; top:0; left:0; }
-
-        /* KONTROL GAME */
+        /* Kontrol Game */
         #controls { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 20; }
         .dpad { position: absolute; bottom: 30px; left: 30px; display: grid; grid-template-columns: 50px 50px 50px; grid-template-rows: 50px 50px 50px; pointer-events: auto; }
         .dpad-btn { background: rgba(255,255,255,0.3); border: 2px solid rgba(255,255,255,0.5); border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 24px; color: white; }
-        .dpad-btn:active { background: rgba(255,255,255,0.6); }
         .dpad-up { grid-column: 2; grid-row: 1; } .dpad-left { grid-column: 1; grid-row: 2; }
         .dpad-right { grid-column: 3; grid-row: 2; } .dpad-down { grid-column: 2; grid-row: 3; }
         .shoot-btn-ui { position: absolute; bottom: 50px; right: 50px; width: 80px; height: 80px; background: rgba(231, 76, 60, 0.7); border: 3px solid #fff; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; color: white; pointer-events: auto; }
-        .shoot-btn-ui:active { background: rgba(231, 76, 60, 1); }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
 </head>
 <body>
-    <div id="app">
-        <!-- UI LOBBY (Disembunyiin dulu, muncul pas diputar) -->
-        <div id="lobby" style="display:none;">
-            <div class="top-bar">
-                <div class="profile-card">👤 <span style="margin-left:5px">MikoPlayer</span></div>
-                <div class="gold-card">🪙 <span id="gold-amount" style="margin-left:5px">1000</span></div>
-            </div>
-
-            <div class="center-char">
-                <div class="char-model">Karakter 2.5D<br>(Gambar)</div>
-            </div>
-
-            <div class="right-menu">
-                <div class="menu-icon" onclick="alert('Buka Shop')">🛒</div>
-                <div class="menu-icon" onclick="alert('Buka Gacha')">🎰</div>
-                <div class="menu-icon" onclick="alert('Buka Event')">🎉</div>
-                <div class="menu-icon" onclick="alert('Buka DM')">💬</div>
-            </div>
-
-            <div class="bottom-right">
-                <div class="mode-select">
-                    <div class="mode-btn">BR - Solo</div>
-                    <div class="mode-btn">BR - Duo</div>
-                </div>
-                <button class="start-btn" onclick="startGame()">START</button>
-            </div>
+    <!-- LOBBY -->
+    <div id="lobby">
+        <div class="top-bar">
+            <div>👤 MikoPlayer</div>
+            <div class="gold">🪙 <span id="gold-amount">1000</span></div>
         </div>
-
-        <!-- Container Game -->
-        <div id="game-container"></div>
-
-        <!-- Kontrol Game -->
-        <div id="controls">
-            <div class="dpad">
-                <div class="dpad-btn dpad-up" id="btn-up">▲</div>
-                <div class="dpad-btn dpad-left" id="btn-left">◀</div>
-                <div class="dpad-btn dpad-right" id="btn-right">▶</div>
-                <div class="dpad-btn dpad-down" id="btn-down">▼</div>
-            </div>
-            <div class="shoot-btn-ui" id="btn-shoot">BANG</div>
+        
+        <div class="center-content">
+            <h1 style="font-size: 40px; text-shadow: 2px 2px #000; color: #f1c40f;">NOVA</h1>
+            <button class="start-btn" onclick="startGame()">START</button>
         </div>
+    </div>
+
+    <!-- GAME -->
+    <div id="game-container"></div>
+    
+    <!-- KONTROL -->
+    <div id="controls">
+        <div class="dpad">
+            <div class="dpad-btn dpad-up" id="btn-up">▲</div>
+            <div class="dpad-btn dpad-left" id="btn-left">◀</div>
+            <div class="dpad-btn dpad-right" id="btn-right">▶</div>
+            <div class="dpad-btn dpad-down" id="btn-down">▼</div>
+        </div>
+        <div class="shoot-btn-ui" id="btn-shoot">BANG</div>
     </div>
 
     <script src="game.js"></script>
